@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+ layout:decorate="template1">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Liste des Utilisateurs</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/webjars/bootstrap/5.3.6/css/bootstrap.min.css"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      th:href="@{/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.css}"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  </head>
+  <body class="">
+  <div layout:fragment="content1">
+ 
+    <div class="d-flex justify-content-between align-items-center m-4">
+      <h2 class="mb-0">Liste des Utilisateurs</h2>
+      <div  th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+      <a th:href="@{editUser(currentPage=${currentPage},searchTerm=${searchTerm})}" class="btn btn-success d-flex align-items-center">
+        <i class="bi bi-plus-circle me-2"></i> Ajouter un utilisateur
+      </a> </div>
+     
+    </div>
+ <div  class="col-md-6 mb-4">
+      <form th:action="@{/users}" method="get" class="mb-4">
+        <div class="input-group">
+          <input
+            type="text"
+            name="searchTerm"
+            class="form-control"
+            placeholder="Rechercher un utilisateur..."
+            aria-label="Rechercher un utilisateur"
+            th:value="${searchTerm}"
+          />
+          <button class="btn btn-outline-secondary" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Profil</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="user : ${listeUsers}">
+            <td th:text="${user.id}">ID</td>
+            <td th:text="${user.username}">Username</td>
+            <td th:text="${user.email}">Email</td>
+            <td>
+              <span class="badge bg-secondary">
+                <i class="bi bi-person-circle me-1"></i>
+                <span th:text="${user.profile?.name} ?: 'Aucun profil'"
+                  >Aucun profil</span
+                >
+              </span>
+            </td>
+            <td>
+              <span
+                class="badge"
+                th:classappend="${user.enabled} ? 'bg-success' : 'bg-danger'"
+                th:text="${user.enabled} ? 'Actif' : 'Inactif'"
+                >Status</span
+              >
+            </td>
+            <td class="text-end">
+              <!-- Exemple d'actions -->
+              <a th:href="@{showUser(id=${user.id},currentPage=${currentPage},searchTerm=${searchTerm})}" class="btn btn-sm btn-primary me-1"
+                ><i class="bi bi-eye"></i
+              ></a>
+              <a th:href="@{editUser(id=${user.id},currentPage=${currentPage},searchTerm=${searchTerm})}" class="btn btn-sm btn-warning me-1"
+                ><i class="bi bi-pencil"></i
+              ></a>
+          <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');" th:href="@{deleteUser(id=${user.id},currentPage=${currentPage},searchTerm=${searchTerm})}" class="btn btn-sm btn-danger"
+                ><i class="bi bi-trash"></i
+              ></a>
+              <a th:href="@{resetPassword(id=${user.id},currentPage=${currentPage},searchTerm=${searchTerm})}" class="btn btn-sm btn-info"
+                ><i class="bi bi-key"></i>	
+                </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div>
+        <ul class="nav nav-pills justify-content-center">
+          <li th:each="page,status:${pages}">
+              <a th:href="@{/users(page=${status.index},searchTerm=${searchTerm})}"
+               th:class="${currentPage == status.index} ? 'btn btn-outline-success m-1 active' : 'btn btn-outline-success m-1'" 
+               th:text="${status.index}+1"></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+   
+  </div>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+    layout:decorate="template1">
+<head>
+<meta charset="UTF-8" />
+<title>Changement mot de passe</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" type="text/css"
+    href="/webjars/bootstrap/5.3.6/css/bootstrap.min.css" />
+<!-- Bootstrap Icons -->
+<link rel="stylesheet"
+    th:href="@{/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.css}" />
+<!-- Custom CSS -->
+<link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+    <div layout:fragment="content1">
+        <h2>user Details</h2>
+        <div class="card">
+            <div class="card-body">
+                
+                <h5 class="card-title" th:text="${user.username}">Username</h5>
+                <p class="card-text">
+                    <strong>Email:</strong> <span th:text="${user.email}">Email
+                        ID</span>
+                </p>
+                <p class="card-text">
+                    <strong>profile:</strong>
+                    <span class="badge bg-secondary" th:text="${user.profile.name}">Profile</span>
+                </p> 
+                
+                <!-- Afficher le message -->
+                <div th:if="${message}"  >
+                   
+                    <span th:text="${message}"></span>
+                </div>
+                
+                <div class="alert alert-info" role="alert">
+                    <strong>Note:</strong> Vous pouvez changer votre mot de passe ici.
+                    <form th:action="@{/change-password}" method="post">
+                    
+    <input type="hidden" name="username" th:value="${#authentication.principal.username}">
+    
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Mot de passe actuel</label>
+                            <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Nouveau mot de passe</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Confirme le nouveau mot de passe</label>
+                            <input type="password" class="form-control" id="confirmeNewPassword" name="confirmeNewPassword" required>
+                        </div>
+                        <div class="mb-3 text-end">
+                            <button type="submit" class="btn btn-primary">Changer le mot de passe</button>
+                            <button type="reset" class="btn btn-secondary">Annuler</button>
+                        </div>
+                        
+                           <div th:if="${error}" class="form-group text-center">
+                            <p style="color: red;">[[${error}]]</p>
+                        </div>
+                        <div th:if="${message}" class="form-group text-center">
+                            <p style="color: green;">[[${message}]]</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
